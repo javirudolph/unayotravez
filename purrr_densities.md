@@ -14,7 +14,27 @@ different. As an example, you can look at [Figure
 5](https://javirudolph.github.io/aracari/Ch1_movement_rates/Ch1_Figures.html)
 in my dissertation’s first chapter.
 
-So, how do we do this?
+Let’s say you want to plot the density of a normal distribution:
 
-To start, let’s say you want to plot the density of a normal
-distribution:
+``` r
+ggplot() +
+  stat_function(fun = dnorm, args = list(mean = 0, sd = 1)) +
+  lims(x = c(-5,5))
+```
+
+![](purrr_densities_files/figure-gfm/unnamed-chunk-1-1.png)<!-- -->
+
+Now, we do many, but change their mean:
+
+``` r
+dnorm_means <- seq(-2,2, length.out = 10)
+
+curves_diff_mean <- purrr::map(seq(1:10), function(y)
+  stat_function(fun = dnorm, args = list(mean = dnorm_means[y], sd = 1)))
+
+ggplot() +
+  curves_diff_mean +
+  lims(x = c(-5, 5))
+```
+
+![](purrr_densities_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
