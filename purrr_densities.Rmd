@@ -34,3 +34,36 @@ ggplot() +
 
 ```
 
+Sometimes my outputs are in a data frame:
+```{r}
+params_df <- data.frame(dnorm_means = dnorm_means,
+                        dnorm_sds = seq(0, 1, length.out = 10),
+                        curve_cols = rainbow(10))
+
+# Create the curves:
+
+colored_curves <- purrr::map(seq(1:10), function(y)
+  stat_function(fun = dnorm, args = list(mean = params_df$dnorm_means[y], sd = params_df$dnorm_sds[y]), color = params_df$curve_cols[y]))
+```
+
+Put it all together:
+```{r}
+ggplot() +
+  colored_curves +
+  lims(x = c(-5, 5))
+
+```
+
+Let's break down the code for the curves: 
+
+```{r}
+colored_curves <- purrr::map(seq(1:10), function(y)
+  stat_function(
+    # First we tell which density function to use:
+    fun = dnorm,
+    # we give it a list with the parameters for the function
+    args = list(mean = params_df$dnorm_means[y], sd = params_df$dnorm_sds[y]),
+    # Here, I added giving a color to each curve
+    color = params_df$curve_cols[y]))
+
+```
